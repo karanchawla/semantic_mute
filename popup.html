@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Semantic Mute</title>
+    <style>
+        :root {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #666666;
+            --accent: #ffffff;
+            --border: #1a1a1a;
+            --hover: #333333;
+            --border-radius: 2px;
+            --font-mono: 'SF Mono', SFMono-Regular, ui-monospace, 'Cascadia Code', Menlo, monospace;
+        }
+
+        body {
+            width: 320px;
+            padding: 16px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            margin: 0;
+            letter-spacing: -0.2px;
+        }
+
+        .header {
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 16px;
+            color: var(--text-primary);
+            font-weight: normal;
+        }
+
+        .header p {
+            margin: 4px 0 0;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 16px;
+            background: var(--bg-secondary);
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .section-title h2 {
+            margin: 0;
+            font-size: 14px;
+            color: var(--text-primary);
+            font-weight: normal;
+        }
+
+        .field {
+            margin-bottom: 12px;
+        }
+
+        .field:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .api-key-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 6px 8px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            box-sizing: border-box;
+            height: 32px;
+            /* Fixed height to match rule items */
+        }
+
+        /* Override default password bullet styling */
+        input[type="password"] {
+            letter-spacing: 4px;
+            font-family: monospace;
+            /* Ensures consistent bullet rendering */
+            font-size: 14px;
+            /* Slightly larger for better bullet visibility */
+            line-height: 1;
+            /* Ensures vertical centering */
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: var(--text-secondary);
+        }
+
+        .toggle-visibility {
+            position: absolute;
+            right: 8px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toggle-visibility:hover {
+            color: var(--text-primary);
+        }
+
+        .rules-container {
+            max-height: 180px;
+            overflow-y: auto;
+            margin-bottom: 12px;
+            padding-right: 4px;
+        }
+
+        .rule-item {
+            display: flex;
+            align-items: center;
+            padding: 0;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            margin-bottom: 4px;
+            height: 32px;
+            /* Match input height */
+            box-sizing: border-box;
+        }
+
+        .rule-text {
+            flex-grow: 1;
+            padding: 6px 8px;
+            /* Match input padding */
+            color: var(--text-primary);
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: text;
+            /* Show text cursor on hover */
+            border: none;
+            background: none;
+            font-family: var(--font-mono);
+            width: 100%;
+        }
+
+        .rule-text:focus {
+            outline: none;
+            background: var(--bg-secondary);
+        }
+
+        .rule-text:hover {
+            background: var(--hover);
+        }
+
+        .rule-delete {
+            flex-shrink: 0;
+            width: 32px;
+            /* Fixed width */
+            height: 32px;
+            /* Match container height */
+            background: none;
+            border: none;
+            border-left: 1px solid var(--border);
+            /* Add separator */
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0;
+            font-family: var(--font-mono);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rule-delete:hover {
+            color: var(--text-primary);
+            background: var(--hover);
+        }
+
+        .button {
+            width: 100%;
+            padding: 8px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            color: var(--text-primary);
+            cursor: pointer;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            transition: all 0.1s ease;
+        }
+
+        .button:hover {
+            background: var(--hover);
+            border-color: var(--text-secondary);
+        }
+
+        .status {
+            margin-top: 12px;
+            padding: 8px;
+            border-radius: var(--border-radius);
+            font-size: 12px;
+            display: none;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .status.success {
+            display: block;
+            border-color: var(--text-secondary);
+        }
+
+        .status.error {
+            display: block;
+            border-color: var(--text-secondary);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--text-secondary);
+            border-radius: var(--border-radius);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-primary);
+        }
+
+        /* Retro terminal-like blinking cursor */
+        .header h1::after {
+            content: '_';
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding: 8px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+        }
+
+        .toggle-label {
+            font-size: 12px;
+            color: var(--text-primary);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 64px;
+            height: 24px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+            /* Prevent text selection */
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 28px;
+            height: 18px;
+            background: var(--text-secondary);
+            border-radius: 1px;
+            transition: transform 0.2s ease;
+        }
+
+        .toggle-switch.active {
+            border-color: var(--text-primary);
+        }
+
+        .toggle-switch.active::after {
+            background: var(--text-primary);
+            transform: translateX(32px);
+        }
+
+        .toggle-text {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            font-family: var(--font-mono);
+            transition: opacity 0.2s ease;
+        }
+
+        .toggle-text.on {
+            left: 8px;
+            color: var(--text-primary);
+            opacity: 0;
+        }
+
+        .toggle-text.off {
+            right: 8px;
+            color: var(--text-secondary);
+            opacity: 1;
+        }
+
+        .toggle-switch.active .toggle-text.on {
+            opacity: 1;
+        }
+
+        .toggle-switch.active .toggle-text.off {
+            opacity: 0;
+        }
+
+        /* Add hover effect */
+        .toggle-switch:hover {
+            border-color: var(--text-secondary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>semantic_mute</h1>
+        <p>Mute your feed with AI</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">
+            <h2>API Key</h2>
+        </div>
+        <div class="field">
+            <div class="api-key-container">
+                <input type="password" id="apiKey" placeholder="sk-...">
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">
+            <h2>Mute rules</h2>
+        </div>
+        <div class="rules-container" id="rulesContainer">
+            <!-- Rules will be dynamically added here -->
+        </div>
+        <div class="field">
+            <input type="text" id="newRule" placeholder="Add mute rule">
+        </div>
+        <button class="button" id="addRule">Add rule</button>
+    </div>
+
+    <!-- <button class="button" id="clearCache">Clear cache</button> -->
+    <div id="status" class="status"></div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>
