@@ -5,398 +5,417 @@
     <title>Semantic Mute</title>
     <style>
         :root {
-            --bg-primary: #000000;
-            --bg-secondary: #0a0a0a;
-            --text-primary: #ffffff;
-            --text-secondary: #666666;
-            --accent: #ffffff;
-            --border: #1a1a1a;
-            --hover: #333333;
-            --border-radius: 2px;
-            --font-mono: 'SF Mono', SFMono-Regular, ui-monospace, 'Cascadia Code', Menlo, monospace;
+            /* Core colors */
+            --bg-deep: #0A0F15;
+            --teal-primary: #1A4345;
+            --old-brick: #911A24;
+            --lava-red: #E9271D;
+            --burning-orange: #FC7738;
+
+            /* Extended palette */
+            --bg-gradient:
+                radial-gradient(circle at 120% -20%,
+                    rgba(233, 39, 29, 0.15) 0%,
+                    rgba(252, 119, 56, 0) 30%),
+                radial-gradient(circle at -20% 110%,
+                    rgba(26, 67, 69, 0.2) 0%,
+                    rgba(0, 0, 0, 0) 40%),
+                linear-gradient(180deg, var(--bg-deep) 0%, #000000 100%);
+            --surface-dark: rgba(26, 67, 69, 0.15);
+            --text-primary: #FFFFFF;
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(255, 255, 255, 0.12);
+            --accent-gradient: linear-gradient(135deg, var(--old-brick) 0%, var(--burning-orange) 100%);
+            --glass-gradient: linear-gradient(rgba(255, 255, 255, 0.03),
+                    rgba(255, 255, 255, 0.01));
+
+            /* Typography */
+            --font-primary: 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100%;
         }
 
         body {
-            width: 320px;
-            padding: 16px;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-family: var(--font-mono);
+            width: 360px;
+            min-height: 520px;
             margin: 0;
+            padding: 24px;
+            background: var(--bg-gradient);
+            color: var(--text-primary);
+            font-family: var(--font-primary);
             letter-spacing: -0.2px;
+            position: relative;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 160px;
+            background:
+                radial-gradient(circle at 70% 30%,
+                    rgba(233, 39, 29, 0.4) 0%,
+                    rgba(252, 119, 56, 0) 50%),
+                radial-gradient(circle at 30% 70%,
+                    rgba(26, 67, 69, 0.4) 0%,
+                    rgba(0, 0, 0, 0) 50%);
+            opacity: 0.5;
+            z-index: 0;
+            pointer-events: none;
         }
 
         .header {
-            margin-bottom: 24px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--border);
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
         }
 
         .header h1 {
             margin: 0;
-            font-size: 16px;
-            color: var(--text-primary);
-            font-weight: normal;
+            font-size: 42px;
+            font-weight: 600;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1.5px;
+            line-height: 1;
+            position: relative;
         }
 
         .header p {
-            margin: 4px 0 0;
+            margin: 12px 0 0;
             color: var(--text-secondary);
-            font-size: 12px;
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.4;
+            max-width: 280px;
+            position: relative;
         }
 
         .section {
-            margin-bottom: 16px;
-            background: var(--bg-secondary);
-            padding: 12px;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: var(--glass-gradient);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border: 1px solid var(--border);
-            border-radius: var(--border-radius);
+            border-radius: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: visible;
+            z-index: 1;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 16px;
+            background: var(--accent-gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .section:hover {
+            transform: translateY(-1px);
+            border-color: transparent;
+        }
+
+        .section:hover::before {
+            opacity: 0.1;
         }
 
         .section-title {
+            margin-bottom: 16px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            gap: 8px;
         }
 
         .section-title h2 {
             margin: 0;
-            font-size: 14px;
+            font-size: 16px;
+            font-weight: 500;
             color: var(--text-primary);
-            font-weight: normal;
-        }
-
-        .field {
-            margin-bottom: 12px;
-        }
-
-        .field:last-child {
-            margin-bottom: 0;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 4px;
-            color: var(--text-secondary);
-            font-size: 12px;
+            opacity: 0.9;
         }
 
         .api-key-container {
             position: relative;
-            display: flex;
-            align-items: center;
+            width: 100%;
+            z-index: 2;
         }
 
         input[type="text"],
         input[type="password"] {
             width: 100%;
-            padding: 6px 8px;
-            background: var(--bg-primary);
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--border);
-            border-radius: var(--border-radius);
+            border-radius: 12px;
             color: var(--text-primary);
-            font-family: var(--font-mono);
-            font-size: 12px;
+            font-family: var(--font-primary);
+            font-size: 14px;
+            transition: all 0.2s ease;
             box-sizing: border-box;
-            height: 32px;
-            /* Fixed height to match rule items */
+            position: relative;
+            z-index: 2;
         }
 
-        /* Override default password bullet styling */
-        input[type="password"] {
-            letter-spacing: 4px;
-            font-family: monospace;
-            /* Ensures consistent bullet rendering */
-            font-size: 14px;
-            /* Slightly larger for better bullet visibility */
-            line-height: 1;
-            /* Ensures vertical centering */
+        input[type="text"]:hover,
+        input[type="password"]:hover {
+            border-color: var(--border-hover);
+            background: rgba(0, 0, 0, 0.35);
         }
 
         input[type="text"]:focus,
         input[type="password"]:focus {
             outline: none;
-            border-color: var(--text-secondary);
+            border-color: var(--burning-orange);
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 0 1px var(--burning-orange);
         }
 
-        .toggle-visibility {
-            position: absolute;
-            right: 8px;
-            background: none;
-            border: none;
+        .section:has(input:focus) {
+            border-color: transparent;
+            transform: translateY(-1px);
+        }
+
+        .section:has(input:focus)::before {
+            opacity: 0.15;
+        }
+
+        input::placeholder {
             color: var(--text-secondary);
-            cursor: pointer;
-            padding: 0;
-            font-family: var(--font-mono);
-            font-size: 14px;
-            width: 24px;
-            height: 24px;
+            opacity: 0.7;
+        }
+
+        .tag-section {
             display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+            z-index: 2;
         }
 
-        .toggle-visibility:hover {
-            color: var(--text-primary);
+        .tag-input-container {
+            position: relative;
+            z-index: 2;
         }
 
-        .rules-container {
-            max-height: 180px;
-            overflow-y: auto;
-            margin-bottom: 12px;
-            padding-right: 4px;
-        }
-
-        .rule-item {
-            display: flex;
-            align-items: center;
-            padding: 0;
-            background: var(--bg-primary);
+        .tag-input {
+            width: 100%;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--border);
-            border-radius: var(--border-radius);
-            margin-bottom: 4px;
-            height: 32px;
-            /* Match input height */
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: var(--font-primary);
+            font-size: 14px;
+            transition: all 0.2s ease;
             box-sizing: border-box;
         }
 
-        .rule-text {
-            flex-grow: 1;
-            padding: 6px 8px;
-            /* Match input padding */
-            color: var(--text-primary);
-            font-size: 12px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            cursor: text;
-            /* Show text cursor on hover */
-            border: none;
-            background: none;
-            font-family: var(--font-mono);
-            width: 100%;
-        }
-
-        .rule-text:focus {
-            outline: none;
-            background: var(--bg-secondary);
-        }
-
-        .rule-text:hover {
-            background: var(--hover);
-        }
-
-        .rule-delete {
-            flex-shrink: 0;
-            width: 32px;
-            /* Fixed width */
-            height: 32px;
-            /* Match container height */
-            background: none;
-            border: none;
-            border-left: 1px solid var(--border);
-            /* Add separator */
+        .tag-input::placeholder {
             color: var(--text-secondary);
-            cursor: pointer;
-            padding: 0;
-            font-family: var(--font-mono);
-            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .tag-input:hover {
+            border-color: var(--border-hover);
+            background: rgba(0, 0, 0, 0.35);
+        }
+
+        .tag-input:focus {
+            outline: none;
+            border-color: var(--burning-orange);
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 0 1px var(--burning-orange);
+        }
+
+        .tag-container {
             display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .rule-delete:hover {
-            color: var(--text-primary);
-            background: var(--hover);
-        }
-
-        .button {
+            flex-direction: column;
+            gap: 8px;
             width: 100%;
-            padding: 8px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: var(--border-radius);
-            color: var(--text-primary);
-            cursor: pointer;
-            font-family: var(--font-mono);
-            font-size: 12px;
-            transition: all 0.1s ease;
+            max-height: 240px;
+            overflow-y: auto;
+            padding-right: 4px;
+            padding-bottom: 4px;
+            position: relative;
+            z-index: 2;
+            margin-top: 8px;
         }
 
-        .button:hover {
-            background: var(--hover);
-            border-color: var(--text-secondary);
-        }
-
-        .status {
-            margin-top: 12px;
-            padding: 8px;
-            border-radius: var(--border-radius);
-            font-size: 12px;
-            display: none;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-        }
-
-        .status.success {
-            display: block;
-            border-color: var(--text-secondary);
-        }
-
-        .status.error {
-            display: block;
-            border-color: var(--text-secondary);
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-primary);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--text-secondary);
-            border-radius: var(--border-radius);
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text-primary);
-        }
-
-        /* Retro terminal-like blinking cursor */
-        .header h1::after {
-            content: '_';
-            animation: blink 1s step-end infinite;
-        }
-
-        @keyframes blink {
-            50% {
-                opacity: 0;
-            }
-        }
-
-        .toggle-container {
+        .tag {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 16px;
-            padding: 8px;
-            background: var(--bg-primary);
+            background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--border);
-            border-radius: var(--border-radius);
-        }
-
-        .toggle-label {
-            font-size: 12px;
-            color: var(--text-primary);
-        }
-
-        .toggle-switch {
-            position: relative;
-            width: 64px;
-            height: 24px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: var(--border-radius);
-            cursor: pointer;
+            border-radius: 12px;
+            padding: 14px 16px;
             transition: all 0.2s ease;
-            user-select: none;
-            /* Prevent text selection */
+            position: relative;
         }
 
-        .toggle-switch::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 28px;
-            height: 18px;
-            background: var(--text-secondary);
-            border-radius: 1px;
-            transition: transform 0.2s ease;
+        .tag:hover {
+            border-color: var(--border-hover);
+            background: rgba(0, 0, 0, 0.4);
+            transform: translateY(-1px);
         }
 
-        .toggle-switch.active {
-            border-color: var(--text-primary);
-        }
-
-        .toggle-switch.active::after {
-            background: var(--text-primary);
-            transform: translateX(32px);
-        }
-
-        .toggle-text {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 10px;
-            font-family: var(--font-mono);
-            transition: opacity 0.2s ease;
-        }
-
-        .toggle-text.on {
-            left: 8px;
+        .tag-text {
+            font-weight: 400;
             color: var(--text-primary);
-            opacity: 0;
+            position: relative;
+            z-index: 1;
+            flex-grow: 1;
+            margin-right: 12px;
         }
 
-        .toggle-text.off {
-            right: 8px;
+        .tag-delete {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
             color: var(--text-secondary);
-            opacity: 1;
+            opacity: 0.5;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0;
+            margin-left: 8px;
+            transition: all 0.15s ease;
+            font-family: system-ui;
         }
 
-        .toggle-switch.active .toggle-text.on {
+        .tag-delete:hover {
             opacity: 1;
+            color: var(--lava-red);
         }
 
-        .toggle-switch.active .toggle-text.off {
+        @keyframes tagAppear {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes tagRemove {
+            to {
+                opacity: 0;
+                transform: translateX(-8px);
+            }
+        }
+
+        .status {
+            background: rgba(0, 0, 0, 0.3);
+            transform: translateY(10px);
             opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 14px 20px;
+            border-radius: 12px;
+            margin-top: 16px;
+            position: relative;
+            z-index: 2;
         }
 
-        /* Add hover effect */
-        .toggle-switch:hover {
-            border-color: var(--text-secondary);
+        .status.success,
+        .status.error {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Enhance icons */
+        .icon {
+            width: 20px;
+            height: 20px;
+            opacity: 0.9;
+            filter: drop-shadow(0 0 8px rgba(252, 119, 56, 0.2));
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+            margin: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+            transition: background 0.2s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--border-hover);
         }
     </style>
 </head>
 
 <body>
     <div class="header">
-        <h1>semantic_mute</h1>
-        <p>Mute your feed with AI</p>
+        <h1>Semantic Mute</h1>
+        <p>Enhance your feed with intelligent content filtering powered by AI</p>
     </div>
 
     <div class="section">
         <div class="section-title">
-            <h2>API Key</h2>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M12 14.5V16.5M7 10.0288C7.47142 10 8.05259 10 8.8 10H15.2C15.9474 10 16.5286 10 17 10.0288M7 10.0288C6.41168 10.0647 5.99429 10.1455 5.63803 10.327C5.07354 10.6146 4.61462 11.0735 4.32698 11.638C4 12.2798 4 13.1198 4 14.8V16.2C4 17.8802 4 18.7202 4.32698 19.362C4.61462 19.9265 5.07354 20.3854 5.63803 20.673C6.27976 21 7.11984 21 8.8 21H15.2C16.8802 21 17.7202 21 18.362 20.673C18.9265 20.3854 19.3854 19.9265 19.673 19.362C20 18.7202 20 17.8802 20 16.2V14.8C20 13.1198 20 12.2798 19.673 11.638C19.3854 11.0735 18.9265 10.6146 18.362 10.327C18.0057 10.1455 17.5883 10.0647 17 10.0288M7 10.0288V8C7 5.23858 9.23858 3 12 3C14.7614 3 17 5.23858 17 8V10.0288"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <h2>OpenAI Key</h2>
         </div>
-        <div class="field">
-            <div class="api-key-container">
-                <input type="password" id="apiKey" placeholder="sk-...">
+        <div class="api-key-container">
+            <input type="password" id="apiKey" placeholder="Enter your OpenAI key to get started">
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 18L12 12M12 12L6 6M12 12L18 6M12 12L6 18" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <h2>Mute Categories</h2>
+        </div>
+        <div class="tag-section">
+            <div class="tag-input-container">
+                <input type="text" class="tag-input" id="tagInput" placeholder="Type a category and press Enter">
+            </div>
+            <div class="tag-container" id="tagContainer">
+                <!-- Tags will be added here -->
             </div>
         </div>
     </div>
 
-    <div class="section">
-        <div class="section-title">
-            <h2>Mute rules</h2>
-        </div>
-        <div class="rules-container" id="rulesContainer">
-            <!-- Rules will be dynamically added here -->
-        </div>
-        <div class="field">
-            <input type="text" id="newRule" placeholder="Add mute rule">
-        </div>
-        <button class="button" id="addRule">Add rule</button>
-    </div>
-
-    <!-- <button class="button" id="clearCache">Clear cache</button> -->
     <div id="status" class="status"></div>
 
     <script src="popup.js"></script>

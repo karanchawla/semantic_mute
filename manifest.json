@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Semantic Mute",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Intelligently mute unwanted content on Twitter using AI-powered semantic analysis.",
     "icons": {
         "16": "icons/icon16.png",
