@@ -2,6 +2,58 @@ document.addEventListener('DOMContentLoaded', () => {
     const apiKeyInput = document.getElementById('apiKey');
     const tagInput = document.getElementById('tagInput');
     const tagContainer = document.getElementById('tagContainer');
+    const clearCacheButton = document.getElementById('clearCache');
+    const resetSettingsButton = document.getElementById('resetSettings');
+
+    // Add tab switching functionality
+    const sidebarItems = document.querySelectorAll('.sidebar-item');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    sidebarItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const targetTab = item.getAttribute('data-tab');
+
+            // Update sidebar items
+            sidebarItems.forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+
+            // Update tab contents
+            tabContents.forEach(tab => {
+                if (tab.id === `${targetTab}-tab`) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+        });
+    });
+
+    // Add settings button handlers
+    clearCacheButton?.addEventListener('click', async () => {
+        try {
+            // Send message to content script to clear cache
+            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, { action: "clearCache" });
+            });
+        } catch (error) {
+            console.error('Error clearing cache:', error);
+        }
+    });
+
+    resetSettingsButton?.addEventListener('click', async () => {
+        try {
+            // Clear all stored settings
+            await chrome.storage.local.clear();
+            // Reset input fields
+            apiKeyInput.value = '';
+            apiKeyInput.dataset.actualValue = '';
+            tagContainer.innerHTML = '';
+            // Notify content script
+            notifyContentScript();
+        } catch (error) {
+            console.error('Error resetting settings:', error);
+        }
+    });
 
     // Function to mask API key
     function maskApiKey(key) {
